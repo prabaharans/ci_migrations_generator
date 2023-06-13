@@ -178,7 +178,7 @@ class Sqltoci {
             }
 
             //$file_path = $path . '/001_create_' . $table . '.php';
-            $file_path = $path . '/001_create_base.php';
+            $file_path = $path . '/002_create_base.php';
             $file = fopen($file_path, 'w+');
 
             if (!$file)
@@ -224,7 +224,7 @@ class Sqltoci {
                 $column_default = $column['Default'];
                 $column_unsigned = FALSE;
                 $unsigned = 'unsigned';
-                
+
                 //si tiene constraint
                 if ( strpos($column['Type'], '(') )
                 {
@@ -242,7 +242,7 @@ class Sqltoci {
                     {
                         //reemplazamos comilla simple por doole
                         $column['Type'] = str_replace('\'', '"', substr( $column['Type'], strpos( $column['Type'], '(') ) );
-                        
+
                         //concadenamos
                         $column_type = $column_type.$column['Type'];
                         $column_constraint = FALSE;
@@ -258,7 +258,7 @@ class Sqltoci {
                     $column_type = strtoupper( $column['Type'] );
                     $column_constraint = FALSE;
                 }
-                
+
                 //si tiene DEAFAULT generar  sql texto plano para escapar el strin en caso e.g. CURRENT_TIMESTAMP
                 if( $column_default == 'CURRENT_TIMESTAMP' )
                 {
@@ -274,24 +274,24 @@ class Sqltoci {
                     $up .= PHP_EOL.
                     "\t\t\t".'\'' . $column['Field'] . '\' => array('.PHP_EOL.
                     "\t\t\t\t".'\'type\' => \'' . $column_type . '\','.PHP_EOL.
-                    ( 
-                        $column_constraint ? 
+                    (
+                        $column_constraint ?
                         "\t\t\t\t".'\'constraint\' => ' . $column_constraint . ','.PHP_EOL :
                         ''
                     ).
-                    ( 
-                        $column_unsigned ? 
+                    (
+                        $column_unsigned ?
                         "\t\t\t\t".'\''.$unsigned.'\' => TRUE,'.PHP_EOL :
                         ''
                     ).
                     "\t\t\t\t".'\'null\' => ' . $column_null . ','.PHP_EOL.
-                    ( 
-                        $column_default != NULL ? 
+                    (
+                        $column_default != NULL ?
                         "\t\t\t\t".'\'default\' => \'' . $column_default . '\','.PHP_EOL :
                         ''
                     ).
-                    ( 
-                    $column['Extra'] ? 
+                    (
+                    $column['Extra'] ?
                     "\t\t\t\t".'\''.$column['Extra'].'\' => TRUE'.PHP_EOL :
                     ''.PHP_EOL
                     ).
