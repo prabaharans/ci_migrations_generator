@@ -214,7 +214,7 @@ class Sqltoci {
 
             $key = '';
             $up .= PHP_EOL."\n\t\t" . '## Create Table ' . $table . "\n";
-            $up .= "\t\t" . '$this->dbforge->add_field(array(';
+            $up .= "\t\t" . '$this->forge->addField(array(';
 
             foreach ($columns as $column)
             {
@@ -299,10 +299,10 @@ class Sqltoci {
                 }
 
                 if ($column['Key'] == 'PRI')
-                    $key = "\t\t" . '$this->dbforge->add_key("' . $column['Field'] . '",true);';
+                    $key = "\t\t" . '$this->forge->addKey("' . $column['Field'] . '",true);';
             }
 
-            $up .= PHP_EOL."\t\t));". PHP_EOL.$key.PHP_EOL."\t\t" . '$this->dbforge->create_table("' . $table . '", TRUE);' . PHP_EOL;
+            $up .= PHP_EOL."\t\t));". PHP_EOL.$key.PHP_EOL."\t\t" . '$this->forge->createTable("' . $table . '", TRUE);' . PHP_EOL;
 
             if (isset($engines['Engine']) and $engines['Engine'])
                 $up .= "\t\t" . '$this->db->query(\'ALTER TABLE  ' . $this->ci->db_master->protect_identifiers($table) .
@@ -310,7 +310,7 @@ class Sqltoci {
 
 
             $down .= "\t\t" . '### Drop table ' . $table . ' ##' . "\n";
-            $down .= "\t\t" . '$this->dbforge->drop_table("' . $table . '", TRUE);' . "\n";
+            $down .= "\t\t" . '$this->forge->dropTable("' . $table . '", TRUE);' . "\n";
 
             /* clear some mem */
             $q->free_result();
@@ -318,8 +318,10 @@ class Sqltoci {
 
         ### generate the text ##
         $return .= '<?php ';
-        $return .= 'defined(\'BASEPATH\') OR exit(\'No direct script access allowed\');' . "\n\n";
-        $return .= 'class Migration_create_base extends CI_Migration {' . "\n";
+        // $return .= 'defined(\'BASEPATH\') OR exit(\'No direct script access allowed\');' . "\n\n";
+        $return .= 'namespace App\Database\Migrations;' . "\n\n";
+        $return .= 'use CodeIgniter\Database\Migration;' . "\n\n";
+        $return .= 'class MigrationCreateBase extends Migration {' . "\n";
         $return .= "\n\t" . 'public function up() {';
 
         $return .= $up;
